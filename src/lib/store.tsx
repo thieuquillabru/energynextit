@@ -76,7 +76,11 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
     refresh();
     api.get<IntegrationInfo>('/api/integration-info').then(setInfo).catch(() => undefined);
     const timer = setInterval(() => {
-      if (document.visibilityState === 'visible') refresh();
+      // Skip while the user is dragging something in the office: a refresh would
+      // swap the layout object mid-gesture.
+      if (document.visibilityState !== 'visible') return;
+      if (document.body.dataset.officeDragging === '1') return;
+      refresh();
     }, 1800);
     return () => clearInterval(timer);
   }, [refresh]);

@@ -523,6 +523,9 @@ export class OfficeScene {
     canvas.addEventListener('pointerdown', (e) => {
       const p = local(e);
       canvas.setPointerCapture(e.pointerId);
+      // Freeze snapshot polling while the pointer is down so a background
+      // refresh cannot replace the layout under an in-progress drag.
+      document.body.dataset.officeDragging = '1';
       this.dragging = {
         mode: 'pan',
         startX: p.x,
@@ -628,6 +631,7 @@ export class OfficeScene {
       const p = local(e);
       const drag = this.dragging;
       this.dragging = null;
+      delete document.body.dataset.officeDragging;
       if (!drag) return;
       if (drag.moved) {
         if (drag.mode === 'entity') this.emitLayoutCommit();
