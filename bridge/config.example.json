@@ -1,0 +1,17 @@
+{
+  "_comment": "Copy to bridge/config.json and fill in. This file is a plug socket: it names the transports YOU are allowed to call. No Arena endpoint is included because none exists publicly.",
+  "agents": {
+    "agent_orion_001": {
+      "upstream": "https://your-gateway.example.com/v1/chat/completions",
+      "model": "your-model-name",
+      "keyEnv": "ORION_API_KEY"
+    },
+    "agent_lyra_007": {
+      "adapter": "example-adapter.mjs",
+      "_comment": "Use an adapter when your agent runtime is not OpenAI-compatible."
+    },
+    "*": {
+      "_comment": "Optional fallback for any agent id without its own entry."
+    }
+  }
+}

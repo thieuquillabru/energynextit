@@ -1,0 +1,10 @@
+node_modules
+dist
+data/*.json
+data/*.json.*
+.env
+.DS_Store
+*.log
+preview-*.png
+bridge/config.json
+*.tsbuildinfo
