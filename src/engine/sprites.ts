@@ -729,12 +729,12 @@ export function drawRoomLabels(ctx: CanvasRenderingContext2D, office: Office, de
     const tw = ctx.measureText(text).width;
     const w = tw + 26;
     const h = 21;
-    // Bottom-row rooms have their first desk tight under the wall, so their
-    // sign sits on the south wall instead.
-    const bottom = room.y > 860;
+    // Signs live in the corridor, never inside the room: a seated character's
+    // head sits just under the top wall, exactly where the old in-room sign was.
+    const above = room.y > 200; // top-row rooms have no corridor above them
     const x = room.x + office.wall + 10;
-    const y = bottom ? room.y + room.h - office.wall - h - 7 : room.y + office.wall + 7;
-    ctx.fillStyle = 'rgba(8,12,18,0.62)';
+    const y = above ? room.y - h - 12 : room.y + room.h + 12;
+    ctx.fillStyle = 'rgba(8,12,18,0.72)';
     roundRect(ctx, x, y, w, h, 5);
     ctx.fill();
     ctx.strokeStyle = dept ? `${dept.color}88` : 'rgba(160,180,210,0.3)';

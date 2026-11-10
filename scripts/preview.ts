@@ -45,6 +45,7 @@ export function renderOffice(canvas, state) {
   drawWalls(ctx, office);
   drawWindows(ctx, office);
   drawDoorFrames(ctx, office);
+  drawRoomLabels(ctx, office, state.departments);
 
   const drawables = [];
   for (const f of office.furniture) {

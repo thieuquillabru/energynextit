@@ -152,9 +152,10 @@ only `hasKey`.
 ## Verifying it
 
 ```bash
-npm test                   # guard + layout + integration + UI (85 checks)
+npm test                   # guard + layout + integration + UI + pixels (93 checks)
 npm run test:integration   # 52 API checks against a mock agent runtime
 npm run test:ui            # 34 checks: mounts the React app in JSDOM and drives it
+npm run test:render        # 8 checks: runs the built bundle and reads back real pixels
 npm run test:layout        # reachability of every desk/meeting seat
 npm run preview:render     # renders preview-office.png headlessly
 ```
@@ -166,6 +167,10 @@ meetings, layout persistence, restart recovery, disconnect/reconnect, endpoint d
 mounts the real bundle in JSDOM with a stubbed canvas and a shimmed `fetch`, then clicks through
 onboarding, the dashboard, the directory, an employee panel, a real chat round-trip, task creation,
 connection settings and the layout editor, failing on any runtime error. Both exit non-zero on failure.
+
+The render probe is the one that catches "it loads but the screen is black": it runs the built
+bundle against a real server with a native rasteriser behind every canvas, then asserts the office
+canvas is viewport-sized and actually painted, writing `preview-browser.png` as evidence.
 
 > `scripts/assert-clean.mjs` runs before every build. It fails if a stray compiled `.js` file appears
 > inside `src/` — Vite resolves `.js` before `.tsx`, so one emitted file silently ships an old bundle.

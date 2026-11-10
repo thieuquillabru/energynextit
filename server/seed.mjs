@@ -7,7 +7,7 @@
  * linking the three building bands.
  */
 
-export const WORLD = { w: 1800, h: 1240 };
+export const WORLD = { w: 1800, h: 1320 };
 export const WALL = 14;
 
 const R = (id, name, x, y, w, h, floor, deptId = null, kind = 'office') => ({
@@ -33,10 +33,10 @@ const ROOMS = [
   R('room-dev', 'Software Development', 40, 420, 580, 400, 'carpet', 'dev'),
   R('room-data', 'Data Management', 660, 420, 420, 400, 'carpet', 'data'),
   R('room-research', 'Research & Analysis', 1120, 420, 640, 400, 'carpet', 'research'),
-  R('room-marketing', 'Marketing', 40, 900, 440, 300, 'carpet', 'marketing'),
-  R('room-admin', 'Administration', 520, 900, 360, 300, 'carpet', 'admin'),
-  R('room-creative', 'Creative', 920, 900, 380, 300, 'carpet', 'creative'),
-  R('room-ops', 'General Operations', 1340, 900, 420, 300, 'carpet', 'ops'),
+  R('room-marketing', 'Marketing', 40, 900, 440, 380, 'carpet', 'marketing'),
+  R('room-admin', 'Administration', 520, 900, 360, 380, 'carpet', 'admin'),
+  R('room-creative', 'Creative', 920, 900, 380, 380, 'carpet', 'creative'),
+  R('room-ops', 'General Operations', 1340, 900, 420, 380, 'carpet', 'ops'),
 ];
 
 const CORRIDORS = [
@@ -142,15 +142,15 @@ function furniture() {
   out.push(F('serverRack', 1000, 700));
   out.push(F('serverRack', 1000, 600));
   out.push(F('serverRack', 1000, 500));
-  out.push(F('printer', 420, 1152));
-  out.push(F('cabinet', 730, 1160));
-  out.push(F('bookshelf', 1090, 1158));
-  out.push(F('coffeeMachine', 1440, 1160));
+  out.push(F('printer', 420, 1232));
+  out.push(F('cabinet', 730, 1240));
+  out.push(F('bookshelf', 1090, 1238));
+  out.push(F('coffeeMachine', 1440, 1240));
   out.push(F('waterCooler', 302, 858));
-  out.push(F('cabinet', 1180, 1150));
+  out.push(F('cabinet', 1180, 1230));
   out.push(F('plant', 860, 858));
   out.push(F('plant', 1740, 858));
-  out.push(F('printer', 800, 1140));
+  out.push(F('printer', 800, 1220));
   return out;
 }
 
@@ -166,21 +166,24 @@ const ST = (roomId, x, y, orientation = 'up') => ({
 
 function stations() {
   const out = [];
+  // Desk rows sit low enough that a seated character's head clears the top wall
+  // (a seated sprite reaches ~67px above its seat, and the seat is 16px above
+  // the desk), so the first row starts at least 100px below the room's top.
   // Software Development: 3 x 2
-  [476, 654].forEach((y) => [80, 250, 420].forEach((x) => out.push(ST('room-dev', x, y, 'up'))));
+  [520, 694].forEach((y) => [80, 250, 420].forEach((x) => out.push(ST('room-dev', x, y, 'up'))));
   // Data Management: 2 x 2
-  [476, 654].forEach((y) => [700, 872].forEach((x) => out.push(ST('room-data', x, y, 'up'))));
+  [520, 694].forEach((y) => [700, 872].forEach((x) => out.push(ST('room-data', x, y, 'up'))));
   // Research & Analysis: 3 x 2
-  [476, 654].forEach((y) => [1164, 1334, 1504].forEach((x) => out.push(ST('room-research', x, y, 'up'))));
+  [520, 694].forEach((y) => [1164, 1334, 1504].forEach((x) => out.push(ST('room-research', x, y, 'up'))));
   // Marketing: 2 x 2
-  [936, 1084].forEach((y) => [80, 250].forEach((x) => out.push(ST('room-marketing', x, y, 'up'))));
+  [1000, 1160].forEach((y) => [80, 250].forEach((x) => out.push(ST('room-marketing', x, y, 'up'))));
   // Administration: 2 x 2
-  [936, 1084].forEach((y) => [560, 730].forEach((x) => out.push(ST('room-admin', x, y, 'up'))));
+  [1000, 1160].forEach((y) => [560, 730].forEach((x) => out.push(ST('room-admin', x, y, 'up'))));
   // Creative: 2 x 2
-  [936, 1084].forEach((y) => [960, 1130].forEach((x) => out.push(ST('room-creative', x, y, 'up'))));
+  [1000, 1160].forEach((y) => [960, 1130].forEach((x) => out.push(ST('room-creative', x, y, 'up'))));
   // General Operations: 2 + 1
-  [1380, 1550].forEach((x) => out.push(ST('room-ops', x, 936, 'up')));
-  out.push(ST('room-ops', 1450, 1084, 'up'));
+  [1380, 1550].forEach((x) => out.push(ST('room-ops', x, 1000, 'up')));
+  out.push(ST('room-ops', 1450, 1160, 'up'));
   // Executive suite: 2 executive workstations
   [96, 196].forEach((y) => out.push({ ...ST('room-ceo', 66, y, 'up'), style: 'exec' }));
   return out;
@@ -195,6 +198,54 @@ export const MEETING_SEATS = (() => {
   seats.push({ x: table.x + table.w + 34, y: table.y + 60, facing: 'west' });
   return seats;
 })();
+
+/**
+ * Desk rows for v2 layouts. Stores created before v2 keep their geometry, so a
+ * boot migration snaps department rows to these values.
+ */
+export const DESK_ROWS_V2 = {
+  'room-dev': [520, 694],
+  'room-data': [520, 694],
+  'room-research': [520, 694],
+  'room-marketing': [1000, 1160],
+  'room-admin': [1000, 1160],
+  'room-creative': [1000, 1160],
+  'room-ops': [1000, 1160],
+};
+
+/** Rooms that were too shallow for a seated character to clear the top wall. */
+export const GROWN_ROOMS = ['room-marketing', 'room-admin', 'room-creative', 'room-ops'];
+
+export const LAYOUT_VERSION = 2;
+
+export function migrateLayout(office) {
+  if (!office || (office.layoutVersion ?? 1) >= LAYOUT_VERSION) return false;
+
+  // The four lower rooms gain height, and their decor moves with them, so that
+  // the first desk row can sit far enough below the wall for a seated sprite.
+  for (const id of GROWN_ROOMS) {
+    const room = office.rooms.find((r) => r.id === id);
+    if (!room || room.h >= 380) continue;
+    room.h = 380;
+    for (const f of office.furniture) {
+      if (f.y >= room.y + 240 && f.x >= room.x && f.x <= room.x + room.w) f.y += 80;
+    }
+  }
+  office.world.h = Math.max(office.world.h, 1320);
+
+  let changed = true;
+  for (const [roomId, rows] of Object.entries(DESK_ROWS_V2)) {
+    const sts = office.stations.filter((s) => s.roomId === roomId);
+    const ys = [...new Set(sts.map((s) => s.y))].sort((a, b) => a - b);
+    ys.forEach((y, i) => {
+      const target = rows[i];
+      if (target === undefined || target === y) return;
+      for (const s of sts) if (s.y === y) { s.y = target; changed = true; }
+    });
+  }
+  office.layoutVersion = LAYOUT_VERSION;
+  return true;
+}
 
 export const LOUNGE_SPOTS = [
   { x: 1560, y: 150 }, { x: 1660, y: 118 }, { x: 1660, y: 214 }, { x: 1712, y: 140 },
@@ -271,6 +322,7 @@ export function createInitialState() {
     },
     office: {
       world: WORLD,
+      layoutVersion: LAYOUT_VERSION,
       wall: WALL,
       rooms: ROOMS,
       corridors: CORRIDORS,

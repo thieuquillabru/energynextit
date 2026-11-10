@@ -169,6 +169,8 @@ export class OfficeScene {
     drawWalls(ctx, office);
     drawWindows(ctx, office);
     drawDoorFrames(ctx, office);
+    // Signs are part of the building, so characters and furniture draw in front.
+    drawRoomLabels(ctx, office, departments);
 
     this.staticLayer = c;
   }
@@ -754,8 +756,13 @@ export class OfficeScene {
 
     for (const a of this.actors.values()) {
       const sel = this.selectedId === a.id;
+      // A seated sprite is anchored at the feet. Sink it a little so the desk
+      // (drawn after it) covers the legs and it reads as sitting, not standing
+      // behind the desk.
+      const seated = a.mode === 'desk' && (a.pose === 'sit' || a.pose === 'type');
+      const drawY = seated ? a.y + 18 : a.y;
       out.push({
-        y: a.y,
+        y: drawY,
         draw: (ctx) => {
           if (sel) {
             const pulse = 0.55 + Math.sin(this.time * 3) * 0.2;
@@ -767,8 +774,8 @@ export class OfficeScene {
             ctx.stroke();
             ctx.restore();
           }
-          drawCharacterShadow(ctx, a.x, a.y);
-          blitCharacter(ctx, a.appearance, a.pose, a.dir, a.frame, a.x, a.y, a.mode === 'offline' ? 0.72 : 1);
+          drawCharacterShadow(ctx, a.x, drawY);
+          blitCharacter(ctx, a.appearance, a.pose, a.dir, a.frame, a.x, drawY, a.mode === 'offline' ? 0.72 : 1);
         },
       });
     }
@@ -828,9 +835,6 @@ export class OfficeScene {
     for (const d of this.drawables()) {
       if (visible(cam.x, d.y, 200)) d.draw(ctx);
     }
-
-    // Labels sit above the furniture so they stay readable.
-    drawRoomLabels(ctx, this.data.office, this.data.departments);
 
     if (this.editor && this.editorSelection) this.renderEditorHighlight(ctx);
 

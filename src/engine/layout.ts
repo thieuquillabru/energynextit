@@ -55,6 +55,8 @@ export function stationGeom(st: Station) {
     stand = { x: x + w + 34, y: y + h / 2 };
     facing = 'left';
   } else {
+    // The employee sits north of the desk and looks down at the monitor, so we
+    // see their face rather than the back of their head.
     seat = { x: x + w / 2, y: y - 16 };
     stand = { x: x + w / 2, y: y - 36 };
     facing = 'down';

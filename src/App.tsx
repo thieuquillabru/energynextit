@@ -51,8 +51,12 @@ function Shell() {
 
   /* --------------------------- scene construction -------------------------- */
 
+  // `Shell` renders nothing until the first snapshot arrives, so the canvas ref is
+  // still empty when this effect first runs. Re-run when the data lands, and bail
+  // out if a scene already exists (the effect must never build a second one).
+  const booted = Boolean(snap);
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (sceneRef.current || !canvasRef.current) return;
     const instance = new OfficeScene(canvasRef.current, {
       onSelectEmployee: (id) => { setSelectedId(id); setPanel(null); setChatTab(false); },
       onDoubleClickEmployee: (id) => { setSelectedId(id); setPanel(null); setChatTab(true); },
@@ -90,7 +94,7 @@ function Shell() {
       instance.destroy();
       sceneRef.current = null;
     };
-  }, [notify, setPanel, setSelectedId, setZoomLabel]);
+  }, [booted, notify, setPanel, setSelectedId, setZoomLabel]);
 
   useEffect(() => {
     if (snap && sceneRef.current) sceneRef.current.setData(snap);

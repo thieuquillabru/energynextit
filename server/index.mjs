@@ -7,7 +7,7 @@ import {
   setSecret, getSecret, hasSecret, publicEndpoint,
 } from './db.mjs';
 import { runAgent, testEndpoint } from './providers.mjs';
-import { createInitialState } from './seed.mjs';
+import { createInitialState, migrateLayout } from './seed.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -31,6 +31,10 @@ if (interrupted) {
   logActivity('system', `${interrupted} task(s) marked failed after a server restart.`);
   save();
 }
+
+// Older stores have desk rows tight against the room's top wall, which pushes a
+// seated character's head into the wall. Snap them onto the current layout.
+if (migrateLayout(getState().office)) save();
 
 const app = express();
 app.use(express.json({ limit: '8mb' }));
@@ -959,7 +963,9 @@ if (fs.existsSync(DIST)) {
   app.use(express.static(DIST, { index: false, maxAge: '1h' }));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/')) return next();
-    res.sendFile(path.join(DIST, 'index.html'));
+    res.sendFile(path.join(DIST, 'index.html'), {
+      headers: { 'Cache-Control': 'no-cache, must-revalidate' },
+    });
   });
 } else {
   app.get('/', (_req, res) => {
