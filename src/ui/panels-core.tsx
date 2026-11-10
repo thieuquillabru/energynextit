@@ -5,6 +5,7 @@ import { api } from '../lib/api';
 import {
   Avatar, Empty, StatusBadge, TaskBadge, clock, deptColor, deptName, timeAgo,
 } from './common';
+import { Donut } from './charts';
 import {
   IconPlay, IconStop, IconTarget, IconPlus, IconRefresh, IconWarning,
 } from './icons';
@@ -36,6 +37,38 @@ export function DashboardPanel({ onFocusEmployee }: CommonProps) {
 
       <div className="hint" style={{ marginTop: 8 }}>
         Every number is computed from stored task and agent records — nothing is estimated.
+      </div>
+
+      <div className="section-title">Workforce</div>
+      <div className="card" style={{ padding: 12 }}>
+        <Donut
+          total={c.employees}
+          caption="employees"
+          segments={[
+            { label: 'Working', value: c.working, color: '#5cc8e8' },
+            { label: 'In meetings', value: c.meetings, color: '#c9a86a' },
+            { label: 'Idle', value: c.idle, color: '#58b894' },
+            { label: 'Placeholders', value: c.simulated, color: '#6d7b8e' },
+            { label: 'Unreachable', value: c.offline, color: '#d97266' },
+          ]}
+        />
+      </div>
+
+      <div className="section-title">Task outcomes</div>
+      <div className="card" style={{ padding: 12 }}>
+        <Donut
+          total={c.pending + c.running + c.completed + c.failed + c.cancelled}
+          caption="tasks"
+          size={92}
+          thickness={11}
+          segments={[
+            { label: 'Completed', value: c.completed, color: '#58b894' },
+            { label: 'Running', value: c.running, color: '#5cc8e8' },
+            { label: 'Pending', value: c.pending, color: '#7f9cff' },
+            { label: 'Failed', value: c.failed, color: '#d97266' },
+            { label: 'Cancelled', value: c.cancelled, color: '#6d7b8e' },
+          ]}
+        />
       </div>
 
       <div className="section-title">Departments</div>

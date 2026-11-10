@@ -117,6 +117,38 @@ reset the floorplan. Everything is saved server-side and restored on reload.
 
 ---
 
+## Art direction
+
+The office is generated at runtime — there are no image assets, so every pixel is code in
+`src/engine/sprites.ts`. That keeps the file small and lets the building grow when you add rooms.
+
+**Palette.** Cool slate architecture (`#3c4655` walls, `#232b36` reveals), warm oak millwork
+(`#7c6144`), walnut and brass in the executive suite (`#4a3527` / `#c2a05a`), muted sage for
+positive states and a single cyan accent (`#5cc8e8`) reserved for live agent activity. Department
+colour is mixed into the floor at 5.5% and appears again in the floor inlay, the wall plate and the
+sign in the corridor, so a room's identity reads without shouting.
+
+**Materials.** Four floor systems, each drawn with a cached pattern tile: oak planks with grain and
+seams, woven carpet with pile speckle, limestone tile with grout and bevel, and poured concrete with
+aggregate and expansion joints. Where a room is carpeted the north wall is glazed instead of solid,
+which is what gives the departments their open-plan feel.
+
+**Light.** One direction, top-left. Windows cast daylight bands and slanted shafts over the top-row
+rooms, each room gets a ceiling pool (warm in the CEO suite and lounge, neutral elsewhere), corridors
+get their own pools, and furniture sits on soft contact shadows. Characters have a radial shadow.
+
+**Characters.** Drawn into a 2× offscreen canvas and cached per appearance/pose/direction. Standing
+height ≈ 91px, seated ≈ 64px, so a seated employee clears the room's top wall. Poses: idle, walk
+(two-frame), sit, type, think, meet, talk. Faces, hair styles (short, side, buzz, bob, bun, curly,
+long), glasses and headsets all come from the stored appearance, so the panel portrait and the person
+in the office are always the same character.
+
+**Interface.** Inter Variable (self-hosted via `@fontsource-variable/inter`, no network at runtime),
+a 10/14px radius scale, one shadow ramp, 130–200 ms transitions, and a single override block at the
+end of `styles.css` that re-skins components without touching layout. Charts and the employee
+portrait are drawn from stored records — the dashboard donuts count employees and tasks, nothing is
+sampled or estimated.
+
 ## Architecture
 
 ```

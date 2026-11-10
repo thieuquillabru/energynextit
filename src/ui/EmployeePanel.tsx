@@ -5,6 +5,7 @@ import type { Task } from '../types';
 import {
   AppearanceEditor, Avatar, Empty, Notice, StatusBadge, TaskBadge, clock, deptName, timeAgo,
 } from './common';
+import { Portrait } from './charts';
 import {
   IconChat, IconClose, IconMeeting, IconPlay, IconPlus, IconSend, IconStop,
   IconTarget, IconTrash, IconWarning,
@@ -64,6 +65,8 @@ export function EmployeePanel({ employeeId, initialTab = 'profile', onClose, onF
 
         {tab === 'profile' && (
           <div className="panel-body">
+            <Portrait appearance={emp.appearance} pose={emp.status === 'working' ? 'type' : 'sit'} />
+            <div style={{ height: 12 }} />
             <AgentIdentity employee={emp} endpointLabel={emp.endpointLabel} />
 
             {!emp.agentResolved && (

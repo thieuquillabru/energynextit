@@ -8,7 +8,7 @@
 import {
   drawChair, drawDoorFrames, drawFurniture, drawMeetingChairs, drawStationDesk,
   drawWalls, drawWindows, paintFloor, blitCharacter, drawCharacterShadow, drawStatusBadge,
-  drawBuildingBase, drawLightPools, drawRoomLabels, PALETTE,
+  drawBuildingBase, drawLightPools, drawRoomLabels, drawCorridorDetails, drawFloorInlays, drawWallDecor, PALETTE,
 } from '../src/engine/sprites';
 import { stationGeom } from '../src/engine/layout';
 
@@ -28,8 +28,13 @@ export function renderOffice(canvas, state) {
   for (const cor of office.corridors) {
     paintFloor(ctx, { id: cor.id, name: '', x: cor.x, y: cor.y, w: cor.w, h: cor.h, floor: 'concrete', deptId: null });
   }
-  for (const room of office.rooms) paintFloor(ctx, room);
+  for (const room of office.rooms) {
+    const dept = state.departments.find((d) => d.id === room.deptId);
+    paintFloor(ctx, room, dept?.color);
+  }
   drawLightPools(ctx, office);
+  drawFloorInlays(ctx, office, state.departments);
+  drawCorridorDetails(ctx, office);
 
   for (const room of office.rooms) {
     const dept = state.departments.find((d) => d.id === room.deptId);
@@ -45,6 +50,7 @@ export function renderOffice(canvas, state) {
   drawWalls(ctx, office);
   drawWindows(ctx, office);
   drawDoorFrames(ctx, office);
+  drawWallDecor(ctx, office, state.departments);
   drawRoomLabels(ctx, office, state.departments);
 
   const drawables = [];

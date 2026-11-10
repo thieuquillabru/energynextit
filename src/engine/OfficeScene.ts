@@ -7,7 +7,8 @@ import {
 import {
   blitCharacter, drawChair, drawCharacterShadow, drawDoorFrames, drawFurniture,
   drawMonitorGlow, drawNameTag, drawStatusBadge, drawStationDesk,
-  drawBuildingBase, drawLightPools, drawRoomLabels, drawWalls, drawWindows, paintFloor,
+  drawBuildingBase, drawCorridorDetails, drawFloorInlays, drawLightPools, drawRoomLabels, drawWallDecor,
+  drawWalls, drawWindows, paintFloor,
   PALETTE, roundRect,
   type DirKey, type Pose,
 } from './sprites';
@@ -149,8 +150,13 @@ export class OfficeScene {
     for (const cor of office.corridors) {
       paintFloor(ctx, { id: cor.id, name: '', x: cor.x, y: cor.y, w: cor.w, h: cor.h, floor: 'concrete', deptId: null });
     }
-    for (const room of office.rooms) paintFloor(ctx, room);
+    for (const room of office.rooms) {
+      const dept = departments.find((d) => d.id === room.deptId);
+      paintFloor(ctx, room, dept?.color);
+    }
     drawLightPools(ctx, office);
+    drawFloorInlays(ctx, office, departments);
+    drawCorridorDetails(ctx, office);
 
     // department accent strips along the top inner wall
     for (const room of office.rooms) {
@@ -169,6 +175,7 @@ export class OfficeScene {
     drawWalls(ctx, office);
     drawWindows(ctx, office);
     drawDoorFrames(ctx, office);
+    drawWallDecor(ctx, office, departments);
     // Signs are part of the building, so characters and furniture draw in front.
     drawRoomLabels(ctx, office, departments);
 

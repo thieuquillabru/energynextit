@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Arena Virtual Company \u2014 a top-down 2D office where your existing Arena AI agents work as employees.",
+  "description": "Arena Virtual Company — a top-down 2D office where your existing Arena AI agents work as employees.",
   "scripts": {
     "dev": "vite",
     "build": "node scripts/assert-clean.mjs && tsc --noEmit && vite build",
@@ -18,6 +18,7 @@
     "test:render": "node scripts/ui-render.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
     "express": "^4.19.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

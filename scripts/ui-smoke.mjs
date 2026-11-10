@@ -91,6 +91,8 @@ try {
     format: 'iife',
     outfile: '/tmp/app-ui-test.js',
     define: { 'process.env.NODE_ENV': '"production"' },
+    // Fonts are irrelevant to a DOM smoke test; drop the binary asset imports.
+    loader: { '.woff2': 'empty', '.woff': 'empty', '.ttf': 'empty' },
     logLevel: 'error',
   });
   const bundle = fs.readFileSync('/tmp/app-ui-test.js', 'utf8');
